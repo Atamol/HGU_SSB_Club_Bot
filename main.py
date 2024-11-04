@@ -1,36 +1,29 @@
 import discord
 from discord.ext import commands
 from discord.ui import View
-import config  # config.py
 
 TOKEN = os.getenv("TOKEN")
 channel_1_id = int(os.getenv("CHANNEL_1_ID"))
 channel_2_id = int(os.getenv("CHANNEL_2_ID"))
 
-# intentを有効にする
 intents = discord.Intents.default()
-intents.members = True               # memberの取得を許可
-intents.message_content = True       # messageの取得を許可
+intents.members = True
+intents.message_content = True
 
-# botのインスタンスを作成
 bot = commands.Bot(command_prefix=';;', intents=intents)
 
-# statusを保存する辞書
 room_status = {
     "is_locked": True,
     "members": [],
     "switch_count": 1
 }
 
-# infoを保持する変数
 info_message = None
 
-# buttonの設定
 class RoomManagementView(View):
     def __init__(self):
         super().__init__(timeout=None)
 
-    # Unlock
     @discord.ui.button(label="Unlock", style=discord.ButtonStyle.green, row=0)
     async def unlock_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.defer()
@@ -42,7 +35,6 @@ class RoomManagementView(View):
             await report_to_channel(channel_2_id, interaction, "🔓 部室を解錠しました", button.label)
             await update_info_message(interaction.channel)
 
-    # Lock
     @discord.ui.button(label="Lock", style=discord.ButtonStyle.red, row=0)
     async def lock_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.defer()
@@ -52,18 +44,16 @@ class RoomManagementView(View):
             room_status["is_locked"] = True
             await report_to_channel(channel_2_id, interaction, "🔒 部室を施錠しました", button.label)
             
-            # 利用者がいる場合、自動で全員削除（leaveに相当する処理）
             if room_status["members"]:
                 room_status["members"].clear()
 
             await update_info_message(interaction.channel)
 
-    # Join
     @discord.ui.button(label="Join", style=discord.ButtonStyle.blurple, row=0)
     async def join_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.defer()
         if room_status["is_locked"]:
-            await interaction.followup.send("部室は施錠されています", ephemeral=True)  # lockedのときはjoinを無効にする
+            await interaction.followup.send("部室は施錠されています", ephemeral=True)
             return
 
         user_mention = f"<@{interaction.user.id}>"
@@ -73,7 +63,6 @@ class RoomManagementView(View):
             room_status["members"].append(user_mention)
             await update_info_message(interaction.channel)
 
-    # Leave
     @discord.ui.button(label="Leave", style=discord.ButtonStyle.gray, row=0)
     async def leave_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.defer()
@@ -83,18 +72,15 @@ class RoomManagementView(View):
         else:
             room_status["members"].remove(user_mention)
             if len(room_status["members"]) == 0:
-                # 通常メッセージで警告を送信
                 await send_warning_message(channel_2_id, user_mention)
             await update_info_message(interaction.channel)
 
-    # Add Switch
     @discord.ui.button(label="Add Switch", style=discord.ButtonStyle.gray, row=1)
     async def add_switch_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.defer()
         room_status["switch_count"] += 1
         await update_info_message(interaction.channel)
 
-    # Bring back Switch
     @discord.ui.button(label="Bring back Switch", style=discord.ButtonStyle.gray, row=1)
     async def bring_back_switch_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.defer()
@@ -104,7 +90,6 @@ class RoomManagementView(View):
         else:
             await interaction.followup.send("エラー: Switchがありません", ephemeral=True)
 
-# infoを更新する関数
 async def update_info_message(channel):
     global info_message
 
@@ -123,12 +108,10 @@ async def update_info_message(channel):
         try:
             await info_message.edit(content=content)
         except discord.errors.NotFound:
-            # メッセージが見つからなかった場合は再度作成する
             info_message = await channel.send(content)
     else:
         info_message = await channel.send(content)
 
-# チャンネル2に報告を投稿する関数
 async def report_to_channel(channel_id, interaction, action_message, button_label):
     channel = bot.get_channel(channel_id)
     if channel:
@@ -142,7 +125,6 @@ async def report_to_channel(channel_id, interaction, action_message, button_labe
         )
         await channel.send(embed=embed)
 
-# 通常のメッセージで警告を送信する関数
 async def send_warning_message(channel_id, user_mention):
     channel = bot.get_channel(channel_id)
     if channel:
@@ -151,18 +133,12 @@ async def send_warning_message(channel_id, user_mention):
 @bot.event
 async def on_ready():
     global info_message
-
     print(f'Logged in as {bot.user}!')
-
-    # チャンネル1を取得してbuttonとinfoを表示
     channel_1 = bot.get_channel(channel_1_id)
 
     if channel_1:
-        # infoを表示
         info_message = await channel_1.send("infoを表示しています...")
         await update_info_message(channel_1)
-
-        # buttonを表示
         view = RoomManagementView()
         await channel_1.send(view=view)
 
