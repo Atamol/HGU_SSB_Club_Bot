@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from discord.ui import View
 
-TOKEN = os.getenv("BOT_TOKEN")
+TOKEN = os.getenv("TOKEN")
 channel_1_id = int(os.getenv("CHANNEL_1_ID"))
 channel_2_id = int(os.getenv("CHANNEL_2_ID"))
 
