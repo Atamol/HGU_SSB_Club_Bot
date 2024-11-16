@@ -7,8 +7,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# テスト1
-
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 DISCORD_BUTTON_CHANNEL = int(os.getenv('DISCORD_BUTTON_CHANNEL_ID'))
 DISCORD_LOG_CHANNEL = int(os.getenv('DISCORD_LOG_CHANNEL_ID'))
@@ -154,7 +152,7 @@ async def on_ready():
     print(f'Logged in as {bot.user}!')
 
     if log_channel:
-        await log_channel.send('再起動しました。')
+        await log_channel.send('自動デプロイテスト。再起動しました。')
     else:
         print('Error: Log Channel not found.')
 
