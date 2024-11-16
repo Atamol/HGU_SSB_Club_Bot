@@ -27,7 +27,7 @@ jobs:
             docker-compose down || true
             docker rm -f HU_SSB_Club_Bot || true
             docker image rm -f HU_SSB_Club_Bot:latest || true
-            git pull
+            git pull origin main
             docker-compose up -d --build
             echo "Deployment Complete"
           EOF
