@@ -1,0 +1,13 @@
+version: '3.9'
+services:
+  HU_SSB_Club_Bot:
+    build: .
+    image: python:3.9-slim
+    container_name: HU_SSB_Club_Bot
+    working_dir: /app
+    volumes:
+      - ./app:/app
+    env_file:
+      - .env
+    command: python /app/main.py
+    restart: always
