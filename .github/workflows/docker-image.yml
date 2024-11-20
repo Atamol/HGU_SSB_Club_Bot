@@ -7,24 +7,23 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Deploy to server
-        env:
-          SERVER_USER: ${{ secrets.SERVER_USER }}
-          SERVER_IP: ${{ secrets.SERVER_IP }}
-          SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
-        run: |
-          sshpass -p "${{ secrets.SERVER_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-            cd /home/atamol/HGU_SSB_Club_Bot
-            docker-compose down || true
-            docker rm -f HGU_SSB_Club_Bot || true
-            docker image rm -f HGU_SSB_Club_Bot:latest || true
-            git pull origin main
-            docker-compose up -d --build
-            echo "Deployment Complete"
-          EOF
+      - name: Stop Existing Docker Containers
+        run: docker-compose down || true
+
+      - name: Remove Old Docker Container
+        run: docker rm -f HGU_SSB_Club_Bot || true
+
+      - name: Remove Old Docker Image
+        run: docker image rm -f HGU_SSB_Club_Bot:latest || true
+
+      - name: Pull Latest Changes from Repository
+        run: git pull origin main
+
+      - name: Build and Start Docker Container
+        run: docker-compose up -d --build
