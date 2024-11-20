@@ -13,21 +13,16 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v2
 
-      - name: Setup SSH Key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-      
       - name: Deploy to server
         env:
           SERVER_USER: ${{ secrets.SERVER_USER }}
           SERVER_IP: ${{ secrets.SERVER_IP }}
+          SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-            cd /home/atamol/HU_SSB_Club_Bot
+          sshpass -p "${{ secrets.SERVER_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+            cd /home/atamol/HGU_SSB_Club_Bot
             docker-compose down || true
-            docker rm -f HU_SSB_Club_Bot || true
+            docker rm -f HGU_SSB_Club_Bot || true
             docker image rm -f HU_SSB_Club_Bot:latest || true
             git pull origin main
             docker-compose up -d --build
