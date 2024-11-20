@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-BOT_TOKEN = os.getenv('BOT_TOKEN')
+BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 DISCORD_BUTTON_CHANNEL = int(os.getenv('DISCORD_BUTTON_CHANNEL_ID'))
 DISCORD_LOG_CHANNEL = int(os.getenv('DISCORD_LOG_CHANNEL_ID'))
 
