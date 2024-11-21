@@ -152,7 +152,7 @@ async def on_ready():
     print(f'Logged in as {bot.user}!')
 
     if log_channel:
-        await log_channel.send('デプロイテスト。再起動しました。')
+        await log_channel.send('テスト。再起動しました。')
     else:
         print('Error: Log Channel not found.')
 
