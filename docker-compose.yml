@@ -1,9 +1,9 @@
 version: '3.9'
 services:
-  HGU_SSB_Club_Bot:
+  hgu_ssb_club_bot:
     build: .
     image: python:3.9-slim
-    container_name: HGU_SSB_Club_Bot
+    container_name: hgu_ssb_club_bot
     working_dir: /app
     volumes:
       - ./app:/app
