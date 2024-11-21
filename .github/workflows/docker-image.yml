@@ -18,7 +18,7 @@ jobs:
         run: |
           touch .env
           echo DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT_TOKEN }} >> .env
-          echo DISCORD_BUTTON_CHANNEL=${{ secrets.DISCORD_BUTTON_CHANNEL_ID }} >> .env
+          echo DISCORD_BUTTON_CHANNEL_ID=${{ secrets.DISCORD_BUTTON_CHANNEL_ID }} >> .env
           echo DISCORD_LOG_CHANNEL_ID=${{ secrets.DISCORD_LOG_CHANNEL_ID }} >> .env
 
       - name: Stop Existing Docker Containers
