@@ -25,10 +25,10 @@ jobs:
         run: docker-compose down || true
 
       - name: Remove Old Docker Container
-        run: docker rm -f HGU_SSB_Club_Bot || true
+        run: docker rm -f hgu_ssb_club_bot || true
 
       - name: Remove Old Docker Image
-        run: docker image rm -f HGU_SSB_Club_Bot:latest || true
+        run: docker image rm -f hgu_ssb_club_bot:latest || true
 
       - name: Pull Latest Changes from Repository
         run: git pull origin main
