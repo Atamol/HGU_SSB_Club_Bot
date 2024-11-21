@@ -7,8 +7,9 @@ on:
 
 jobs:
   deploy:
-    runs-on: self-hosted
-    runs-on: shared-runner
+    runs-on:
+    - self-hosted
+    - shared-runner
 
     steps:
       - name: Check out repository
