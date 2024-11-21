@@ -13,6 +13,7 @@ jobs:
     steps:
       - name: Configure Git Safe Directory
         run: |
+          export HOME=/home/actions-runner/Runner-HGU_SSB_Club_Bot
           git config --global --add safe.directory /home/actions-runner/Runner-HGU_SSB_Club_Bot/_work/HGU_SSB_Club_Bot/HGU_SSB_Club_Bot
 
       - name: Check out repository
